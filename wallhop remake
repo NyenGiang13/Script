@@ -1,0 +1,178 @@
+-- Modern WallHop UI Premium 2026 - Combined Version
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "WallHopGộp"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+screenGui.ResetOnSpawn = false
+
+-- Cài đặt góc bo tròn
+local function addCorner(parent, radius)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = radius or UDim.new(0, 8)
+    corner.Parent = parent
+end
+
+-- Khung chính
+local frame = Instance.new("Frame")
+frame.Parent = screenGui
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BackgroundTransparency = 0.1
+frame.Size = UDim2.new(0, 220, 0, 200)
+frame.Position = UDim2.new(0.5, -110, 0.5, -100)
+frame.Active = true
+frame.Draggable = true
+addCorner(frame, UDim.new(0, 10))
+
+-- Nút Thu nhỏ (-)
+local hideBtn = Instance.new("TextButton")
+hideBtn.Parent = frame
+hideBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+hideBtn.Size = UDim2.new(0, 25, 0, 25)
+hideBtn.Position = UDim2.new(1, -30, 0, 5)
+hideBtn.Text = "-"
+hideBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+hideBtn.Font = Enum.Font.GothamBold
+addCorner(hideBtn, UDim.new(0, 5))
+
+-- Nút Hiện lại
+local showBtn = Instance.new("TextButton")
+showBtn.Parent = screenGui
+showBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+showBtn.Size = UDim2.new(0, 80, 0, 30)
+showBtn.Position = UDim2.new(0, 10, 0, 10)
+showBtn.Text = "Show Menu"
+showBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+showBtn.Visible = false
+addCorner(showBtn)
+
+hideBtn.MouseButton1Click:Connect(function() frame.Visible = false showBtn.Visible = true end)
+showBtn.MouseButton1Click:Connect(function() frame.Visible = true showBtn.Visible = false end)
+
+-- Tiêu đề & Trạng thái
+local title = Instance.new("TextLabel")
+title.Parent = frame
+title.Size = UDim2.new(1, 0, 0, 35)
+title.Text = "WALLHOP PANEL"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.BackgroundTransparency = 1
+
+local status = Instance.new("TextLabel")
+status.Parent = frame
+status.Size = UDim2.new(1, 0, 0, 20)
+status.Position = UDim2.new(0, 0, 0, 30)
+status.Text = "Status: OFF"
+status.TextColor3 = Color3.fromRGB(255, 80, 80)
+status.Font = Enum.Font.GothamSemibold
+status.BackgroundTransparency = 1
+
+-- [NÚT CHẾ ĐỘ]
+local mode = "Player"
+local modeBtn = Instance.new("TextButton")
+modeBtn.Parent = frame
+modeBtn.Size = UDim2.new(1, -30, 0, 30)
+modeBtn.Position = UDim2.new(0, 15, 0, 55)
+modeBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+modeBtn.Text = "Mode: Rotate Player"
+modeBtn.TextColor3 = Color3.fromRGB(200, 200, 255)
+modeBtn.Font = Enum.Font.GothamBold
+addCorner(modeBtn)
+
+modeBtn.MouseButton1Click:Connect(function()
+    mode = (mode == "Player") and "Camera" or "Player"
+    modeBtn.Text = "Mode: Rotate " .. mode
+end)
+
+-- Nút Bật/Tắt
+local onBtn = Instance.new("TextButton")
+onBtn.Parent = frame
+onBtn.Size = UDim2.new(0, 85, 0, 35)
+onBtn.Position = UDim2.new(0, 15, 0, 95)
+onBtn.BackgroundColor3 = Color3.fromRGB(46, 204, 113)
+onBtn.Text = "ENABLE"
+onBtn.Font = Enum.Font.GothamBold
+addCorner(onBtn)
+
+local offBtn = Instance.new("TextButton")
+offBtn.Parent = frame
+offBtn.Size = UDim2.new(0, 85, 0, 35)
+offBtn.Position = UDim2.new(0, 120, 0, 95)
+offBtn.BackgroundColor3 = Color3.fromRGB(231, 76, 60)
+offBtn.Text = "DISABLE"
+offBtn.Font = Enum.Font.GothamBold
+addCorner(offBtn)
+
+local destroyBtn = Instance.new("TextButton")
+destroyBtn.Parent = frame
+destroyBtn.Size = UDim2.new(1, -30, 0, 30)
+destroyBtn.Position = UDim2.new(0, 15, 0, 140)
+destroyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+destroyBtn.Text = "Remove Script"
+destroyBtn.TextColor3 = Color3.fromRGB(150, 150, 150)
+addCorner(destroyBtn)
+
+---------------------------------------------------------
+-- LOGIC WALLHOP TỐI ƯU
+---------------------------------------------------------
+local toggle = false
+local canJump = true
+local rayParams = RaycastParams.new()
+rayParams.FilterType = Enum.RaycastFilterType.Exclude
+
+local function isNearWall()
+    local char = game.Players.LocalPlayer.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return false end
+    rayParams.FilterDescendantsInstances = {char}
+    local look = hrp.CFrame.LookVector
+    local right = hrp.CFrame.RightVector
+    local rays = {look, -look, right, -right}
+    for _, dir in pairs(rays) do
+        local res = workspace:Raycast(hrp.Position, dir * 3, rayParams)
+        if res and res.Instance then return true end
+    end
+    return false
+end
+
+onBtn.MouseButton1Click:Connect(function()
+    toggle = true
+    status.Text = "Status: ACTIVE"
+    status.TextColor3 = Color3.fromRGB(46, 204, 113)
+end)
+
+offBtn.MouseButton1Click:Connect(function()
+    toggle = false
+    status.Text = "Status: OFF"
+    status.TextColor3 = Color3.fromRGB(255, 80, 80)
+end)
+
+destroyBtn.MouseButton1Click:Connect(function() screenGui:Destroy() end)
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+    if toggle and canJump and isNearWall() then
+        canJump = false
+        local char = game.Players.LocalPlayer.Character
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        local root = char:FindFirstChild("HumanoidRootPart")
+        local cam = workspace.CurrentCamera
+
+        if hum and root then
+            -- Ép trạng thái nhảy
+            hum:ChangeState(Enum.HumanoidStateType.Jumping)
+            -- Thêm lực đẩy lên để hỗ trợ leo (Velocity)
+            root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, 48, root.AssemblyLinearVelocity.Z)
+
+            if mode == "Player" then
+                root.CFrame = root.CFrame * CFrame.Angles(0, math.rad(-45), 0)
+                task.wait(0.03)
+                root.CFrame = root.CFrame * CFrame.Angles(0, math.rad(45), 0)
+            else
+                local oldCam = cam.CFrame
+                cam.CFrame = cam.CFrame * CFrame.Angles(0, math.rad(-45), 0)
+                task.wait(0.03)
+                cam.CFrame = oldCam
+            end
+        end
+        task.wait(0.05)
+        canJump = true
+    end
+end)
