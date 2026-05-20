@@ -1,0 +1,109 @@
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local UIStroke = Instance.new("UIStroke")
+local UIGradient = Instance.new("UIGradient")
+local Title = Instance.new("TextLabel")
+
+-- Cấu hình ScreenGui
+ScreenGui.Parent = game.CoreGui
+ScreenGui.Name = "ZombieArena_SoftRainbow"
+ScreenGui.ResetOnSpawn = false
+
+-- Hàm tạo THÔNG BÁO CHỮ ĐỎ NHẸ RÕ NÉT
+local function NotifyRed(text)
+    local NotifyGui = Instance.new("ScreenGui")
+    NotifyGui.Parent = game.CoreGui
+    
+    local Label = Instance.new("TextLabel")
+    Label.Parent = NotifyGui
+    Label.Size = UDim2.new(0, 500, 0, 50)
+    Label.Position = UDim2.new(0.5, -250, 0.2, 0)
+    Label.BackgroundTransparency = 1
+    Label.TextColor3 = Color3.fromRGB(255, 120, 120) -- Màu đỏ nhẹ (Pastel)
+    Label.Text = text
+    Label.Font = Enum.Font.GothamBold
+    Label.TextSize = 24
+    Label.TextStrokeTransparency = 0.4
+    Label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    
+    task.spawn(function()
+        task.wait(3.5)
+        for i = 0, 1, 0.1 do
+            Label.TextTransparency = i
+            Label.TextStrokeTransparency = 0.4 + (i * 0.6)
+            task.wait(0.05)
+        end
+        NotifyGui:Destroy()
+    end)
+end
+
+-- Khung Menu Chính (Thu nhỏ chiều cao lại vì không còn các nút bấm)
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -40)
+MainFrame.Size = UDim2.new(0, 300, 0, 80)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+UICorner.CornerRadius = UDim.new(0, 15)
+UICorner.Parent = MainFrame
+
+-- Hiệu ứng Cầu vồng nhạt cho Phông nền
+UIGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 180, 180)),
+    ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 255, 180)),
+    ColorSequenceKeypoint.new(0.4, Color3.fromRGB(180, 255, 180)),
+    ColorSequenceKeypoint.new(0.6, Color3.fromRGB(180, 255, 255)),
+    ColorSequenceKeypoint.new(0.8, Color3.fromRGB(180, 180, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 180, 255))
+}
+UIGradient.Parent = MainFrame
+
+-- Viền Menu
+UIStroke.Parent = MainFrame
+UIStroke.Thickness = 3
+UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke.Color = Color3.fromRGB(255, 255, 255)
+
+-- Script làm cho hiệu ứng Cầu vồng xoay liên tục mượt mà
+task.spawn(function()
+    local rot = 0
+    while true do
+        rot = rot + 0.8
+        UIGradient.Rotation = rot
+        if rot >= 360 then rot = 0 end
+        task.wait(0.02)
+    end
+end)
+
+-- Tiêu đề Menu (Căn giữa lại vào khung)
+Title.Parent = MainFrame
+Title.Text = "SURVIVE ZOMBIE ARENA"
+Title.Font = Enum.Font.GothamBold
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 18
+Title.Size = UDim2.new(1, 0, 1, 0)
+Title.BackgroundTransparency = 1
+Title.TextStrokeTransparency = 0.5
+
+--- THỰC THI CHẠY SCRIPT TỰ ĐỘNG ---
+
+task.spawn(function()
+    NotifyRed("Đang khởi chạy script, vui lòng đợi...")
+    task.wait(1)
+    
+    local success, err = pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/SurviveZombieArena"))()
+    end)
+    
+    if success then
+        NotifyRed("Kích hoạt thành công!")
+        task.wait(1.5)
+        ScreenGui:Destroy() -- Tự động đóng menu thông báo sau khi chạy xong
+    else
+        NotifyRed("Lỗi tải script!")
+        warn("Chi tiết lỗi: " .. tostring(err))
+    end
+end)
