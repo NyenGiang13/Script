@@ -1,0 +1,68 @@
+local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
+
+local localPlayer = Players.LocalPlayer
+local isAntiAfkEnabled = false -- Trạng thái mặc định là TẮT
+
+----------------------------------------------------------------
+-- TỰ ĐỘNG TẠO GUI BẰNG CODE
+----------------------------------------------------------------
+-- 1. Tạo ScreenGui chính
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AntiAfkSystemGui"
+screenGui.ResetOnSpawn = false -- Giữ lại nút bấm khi nhân vật bị reset/chết
+screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+
+-- 2. Tạo Nút bấm (TextButton)
+local toggleButton = Instance.new("TextButton")
+toggleButton.Name = "ToggleButton"
+toggleButton.Size = UDim2.new(0, 130, 0, 45)
+toggleButton.Position = UDim2.new(0, 20, 0, 20) -- Vị trí ở góc trên bên trái màn hình
+toggleButton.BackgroundColor3 = Color3.fromRGB(220, 60, 60) -- Màu đỏ (OFF)
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.Font = Enum.Font.SourceSansBold
+toggleButton.TextSize = 16
+toggleButton.Text = "Anti-AFK: OFF"
+toggleButton.Parent = screenGui
+
+-- 3. Tạo bo tròn góc cho nút bấm
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 8)
+uiCorner.Parent = toggleButton
+
+----------------------------------------------------------------
+-- XỬ LÝ LOGIC BẬT/TẮT VÀ CHỐNG IDLE
+----------------------------------------------------------------
+-- Bắt sự kiện khi click vào nút
+toggleButton.MouseButton1Click:Connect(function()
+	isAntiAfkEnabled = not isAntiAfkEnabled
+	
+	if isAntiAfkEnabled then
+		toggleButton.Text = "Anti-AFK: ON"
+		toggleButton.BackgroundColor3 = Color3.fromRGB(60, 180, 60) -- Đổi sang màu xanh lá
+		print("Đã BẬT hệ thống chống AFK!")
+		
+		-- Nhảy nhẹ một cái để báo hiệu kích hoạt thành công
+		local character = localPlayer.Character
+		if character then
+			local humanoid = character:FindFirstChildOfClass("Humanoid")
+			if humanoid then
+				humanoid.Jump = true
+			end
+		end
+	else
+		toggleButton.Text = "Anti-AFK: OFF"
+		toggleButton.BackgroundColor3 = Color3.fromRGB(220, 60, 60) -- Đổi về màu đỏ
+		print("Đã TẮT hệ thống chống AFK!")
+	end
+end)
+
+-- Bắt sự kiện hệ thống khi Roblox phát hiện bạn đang treo máy (Idle)
+localPlayer.Idled:Connect(function(timeIdled)
+	if isAntiAfkEnabled then
+		-- Sử dụng VirtualUser để giả lập thao tác nhấn chuột của người chơi, đánh lừa hệ thống AFK
+		VirtualUser:CaptureController()
+		VirtualUser:ClickButton2(Vector2.new(0, 0))
+		print("[Anti-AFK]: Đã giả lập click chuột để reset thời gian idle!")
+	end
+end)
