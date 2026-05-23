@@ -1,0 +1,322 @@
+local Players           = cloneref(game:GetService("Players"))
+local RunService        = cloneref(game:GetService("RunService"))
+local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+local CoreGui           = cloneref(game:GetService("CoreGui"))
+local TweenService      = cloneref(game:GetService("TweenService"))
+
+local LP     = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+-- ── CẤU HÌNH LOGIC KO PREDICTOR ────────────────────────────
+local BASE_SPEED = 7.84
+local SPEED_STEP = 2.85
+local FRICTION   = 6.3
+
+local powerLevel = 1
+local ok, Bindables = pcall(function() return ReplicatedStorage:WaitForChild("Bindables", 5) end)
+if ok and Bindables then
+    local ev = Bindables:FindFirstChild("PowerChanged")
+    if ev then ev.Event:Connect(function(n) powerLevel = n end) end
+end
+
+-- Dọn dẹp bản chạy cũ nếu có để tránh trùng lặp
+if _G.KO_CONN  then pcall(function() _G.KO_CONN:Disconnect() end) end
+if _G.KO_PARTS then for _,p in ipairs(_G.KO_PARTS) do pcall(function() p:Destroy() end) end end
+if _G.KO_UI    then pcall(function() _G.KO_UI:Destroy() end) end
+
+local RED = Color3.fromRGB(255, 40, 40)
+local GREEN = Color3.fromRGB(40, 255, 120)
+
+-- ── KHỞI TẠO PARTS VÀ HIỆU ỨNG ────────────────────────────
+local function neon(sz, col, shape)
+    local p = Instance.new("Part")
+    p.Size = sz; p.Color = col or RED
+    p.Material = Enum.Material.Neon
+    p.Anchored = true; p.CanCollide = false
+    p.CastShadow = false; p.Transparency = 1
+    if shape then p.Shape = shape end
+    p.Parent = workspace
+    return p
+end
+
+local function addOutline(part)
+    local h = Instance.new("Highlight")
+    h.Adornee = part; h.FillTransparency = 1
+    h.OutlineColor = Color3.new(0, 0, 0)
+    h.OutlineTransparency = 0; h.Parent = part
+end
+
+local stem = neon(Vector3.new(0.2, 0.2, 1), RED)
+addOutline(stem)
+
+local sphere = neon(Vector3.new(2.2, 2.2, 2.2), RED, Enum.PartType.Ball)
+addOutline(sphere)
+
+local DOT_N = 12
+local DOT_R = 2.4
+local dots  = {}
+for i = 1, DOT_N do
+    local d = neon(Vector3.new(0.7, 0.7, 0.7), RED, Enum.PartType.Ball)
+    addOutline(d)
+    dots[i] = d
+end
+
+_G.KO_PARTS = { stem, sphere }
+for _, d in ipairs(dots) do table.insert(_G.KO_PARTS, d) end
+
+local function hideAllParts()
+    stem.Transparency = 1
+    sphere.Transparency = 1
+    for _, d in ipairs(dots) do d.Transparency = 1 end
+end
+
+-- ── THIẾT KẾ GUI HIỆN ĐẠI (DARK THEME) ────────────────────────────
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "KOPredictorUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = CoreGui
+_G.KO_UI = ScreenGui
+
+-- Khung chính (Main Frame)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 220, 0, 130)
+MainFrame.Position = UDim2.new(0.05, 0, 0.4, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.ClipsDescendants = true -- Để ẩn mượt phần nội dung bên dưới khi thu gọn
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = MainFrame
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(45, 45, 45)
+UIStroke.Thickness = 1.5
+UIStroke.Parent = MainFrame
+
+-- Tiêu đề (Title)
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -40, 0, 35) -- Chừa chỗ cho nút ẩn/hiện
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Knockout"
+Title.TextColor3 = Color3.fromRGB(240, 240, 240)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = MainFrame
+
+-- NÚT ẨN / HIỆN GUI (Minimize Button)
+local MinimizeBtn = Instance.new("TextButton")
+MinimizeBtn.Name = "MinimizeBtn"
+MinimizeBtn.Size = UDim2.new(0, 25, 0, 25)
+MinimizeBtn.Position = UDim2.new(1, -35, 0, 5)
+MinimizeBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+MinimizeBtn.BorderSizePixel = 0
+MinimizeBtn.Text = "-"
+MinimizeBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+MinimizeBtn.Font = Enum.Font.GothamBold
+MinimizeBtn.TextSize = 16
+MinimizeBtn.Parent = MainFrame
+
+local MinCorner = Instance.new("UICorner")
+MinCorner.CornerRadius = UDim.new(0, 6)
+MinCorner.Parent = MinimizeBtn
+
+-- Khung chứa nội dung cần ẩn (Content Frame)
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Size = UDim2.new(1, 0, 1, -35)
+ContentFrame.Position = UDim2.new(0, 0, 0, 35)
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.Parent = MainFrame
+
+-- Thanh ngăn cách nhẹ
+local Line = Instance.new("Frame")
+Line.Size = UDim2.new(0.9, 0, 0, 1)
+Line.Position = UDim2.new(0.05, 0, 0, 0)
+Line.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+Line.BorderSizePixel = 0
+Line.Parent = ContentFrame
+
+-- Trạng thái văn bản (Status Text)
+local StatusLabel = Instance.new("TextLabel")
+StatusLabel.Size = UDim2.new(1, 0, 0, 25)
+StatusLabel.Position = UDim2.new(0, 0, 0, 10)
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Text = "Trạng thái: TẮT"
+StatusLabel.TextColor3 = RED
+StatusLabel.Font = Enum.Font.GothamMedium
+StatusLabel.TextSize = 12
+StatusLabel.Parent = ContentFrame
+
+-- Nút Bật/Tắt (Toggle Button)
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(0, 160, 0, 35)
+ToggleBtn.Position = UDim2.new(0.5, -80, 0, 45)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+ToggleBtn.BorderSizePixel = 0
+ToggleBtn.Text = "BẬT SCRIPT"
+ToggleBtn.TextColor3 = Color3.fromRGB(230, 230, 230)
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.TextSize = 13
+ToggleBtn.Parent = ContentFrame
+
+local BtnCorner = Instance.new("UICorner")
+BtnCorner.CornerRadius = UDim.new(0, 8)
+BtnCorner.Parent = ToggleBtn
+
+local BtnStroke = Instance.new("UIStroke")
+BtnStroke.Color = Color3.fromRGB(55, 55, 55)
+BtnStroke.Thickness = 1
+BtnStroke.Parent = ToggleBtn
+
+-- ── TRẠNG THÁI HOẠT ĐỘNG ────────────────────────────
+local isEnabled = false
+local isMinimized = false
+local lastPos   = Vector3.new(0, 0, 0)
+local pulse     = 0
+
+local function function_loop(dt)
+    if not isEnabled then return end
+    
+    pulse = pulse + dt * 1.2
+
+    local char = LP.Character
+    local hrp  = char and char:FindFirstChild("HumanoidRootPart")
+    if not hrp then
+        hideAllParts()
+        return
+    end
+
+    local curPos   = hrp.Position
+    local asmVel   = hrp.AssemblyLinearVelocity
+    local posDelta = (curPos - lastPos).Magnitude / math.max(dt, 0.001)
+
+    local dir = flatUnit(Camera.CFrame.LookVector)
+    if asmVel.Magnitude > 3 then
+        local velDir = flatUnit(asmVel)
+        if velDir then dir = velDir end
+    end
+
+    if not dir then 
+        dir = flatUnit(hrp.CFrame.LookVector) or Vector3.new(0, 0, 1)
+    end
+
+    local moving   = posDelta > 0.5
+    local rawSpeed = moving and posDelta or (BASE_SPEED + (powerLevel - 1) * SPEED_STEP)
+    local dist     = (rawSpeed * rawSpeed) / (2 * FRICTION)
+    if dist < 0.1 then dist = 0.1 end
+
+    local endPos = Vector3.new(curPos.X + dir.X * dist, curPos.Y, curPos.Z + dir.Z * dist)
+    local stemDist = (endPos - curPos).Magnitude
+    local ps       = 1 + math.sin(pulse * 0.5) * 0.03
+
+    -- Render Stem
+    if stemDist > 0.5 then
+        local success = pcall(function()
+            stem.CFrame = CFrame.new(curPos, endPos) * CFrame.new(0, 0, -stemDist / 2)
+        end)
+        if success then
+            stem.Size   = Vector3.new(0.18, 0.18, stemDist)
+            stem.Transparency = 0.2
+        else
+            stem.Transparency = 1
+        end
+    else
+        stem.Transparency = 1
+    end
+
+    -- Render Sphere
+    sphere.Position    = endPos + Vector3.new(0, 1.1, 0)
+    sphere.Size        = Vector3.new(2.2 * ps, 2.2 * ps, 2.2 * ps)
+    sphere.Transparency = 0.1
+
+    -- Render Orbit Dots
+    local rot = pulse * 0.3
+    for i = 1, DOT_N do
+        local angle = (i - 1) * (2 * math.pi / DOT_N) + rot
+        local x  = endPos.X + DOT_R * math.cos(angle)
+        local z  = endPos.Z + DOT_R * math.sin(angle)
+        local y  = endPos.Y + 1.1
+        local sz = 0.65 + math.sin(pulse * 0.6 + i * 0.5) * 0.03
+        dots[i].CFrame = CFrame.new(x, y, z)
+        dots[i].Size   = Vector3.new(sz, sz, sz)
+        dots[i].Transparency = 0.08
+    end
+
+    lastPos = curPos
+end
+
+function flatUnit(v)
+    local flat = Vector3.new(v.X, 0, v.Z)
+    if flat.Magnitude > 0.001 then return flat.Unit end
+    return nil
+end
+
+_G.KO_CONN = RunService.RenderStepped:Connect(function(dt)
+    pcall(function() function_loop(dt) end)
+end)
+
+-- ── LOGIC ẨN / HIỆN GUI (MINIMIZE) ────────────────────────────
+MinimizeBtn.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    
+    if isMinimized then
+        -- Thu nhỏ thành thanh tiêu đề gọn gàng
+        MinimizeBtn.Text = "+"
+        ContentFrame.Visible = false
+        TweenService:Create(MainFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 220, 0, 35)}):Play()
+    else
+        -- Mở rộng lại như cũ
+        MinimizeBtn.Text = "-"
+        TweenService:Create(MainFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 220, 0, 130)}):Play()
+        task.wait(0.1) -- Đợi mượt khung hình rồi mới hiện nội dung bên trong
+        ContentFrame.Visible = true
+    end
+end)
+
+-- ── LOGIC XỬ LÝ CLICK NÚT TOGGLE BẬT/TẮT SCRIPT ────────────────
+ToggleBtn.MouseButton1Click:Connect(function()
+    isEnabled = not isEnabled
+    
+    if isEnabled then
+        StatusLabel.Text = "Trạng thái: ĐANG BẬT"
+        StatusLabel.TextColor3 = GREEN
+        ToggleBtn.Text = "TẮT SCRIPT"
+        TweenService:Create(BtnStroke, TweenInfo.new(0.25), {Color = GREEN}):Play()
+        TweenService:Create(ToggleBtn, TweenInfo.new(0.25), {TextColor3 = GREEN}):Play()
+        
+        local char = LP.Character
+        local hrp  = char and char:FindFirstChild("HumanoidRootPart")
+        if hrp then lastPos = hrp.Position end
+    else
+        StatusLabel.Text = "Trạng thái: TẮT"
+        StatusLabel.TextColor3 = RED
+        ToggleBtn.Text = "BẬT SCRIPT"
+        TweenService:Create(BtnStroke, TweenInfo.new(0.25), {Color = Color3.fromRGB(55, 55, 55)}):Play()
+        TweenService:Create(ToggleBtn, TweenInfo.new(0.25), {TextColor3 = Color3.fromRGB(230, 230, 230)}):Play()
+        hideAllParts()
+    end
+end)
+
+-- Hiệu ứng Hover chuột
+ToggleBtn.MouseEnter:Connect(function() TweenService:Create(ToggleBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(45, 45, 45)}):Play() end)
+ToggleBtn.MouseLeave:Connect(function() TweenService:Create(ToggleBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play() end)
+MinimizeBtn.MouseEnter:Connect(function() TweenService:Create(MinimizeBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play() end)
+MinimizeBtn.MouseLeave:Connect(function() TweenService:Create(MinimizeBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play() end)
+
+-- Hàm dọn dẹp sạch sẽ
+_G.KO_DESTROY = function()
+    if _G.KO_CONN then _G.KO_CONN:Disconnect() end
+    for _, p in ipairs(_G.KO_PARTS or {}) do pcall(function() p:Destroy() end) end
+    if _G.KO_UI then pcall(function() _G.KO_UI:Destroy() end) end
+    print("[KO] Đã xóa toàn bộ!")
+end
+
+print("[KO UI v2.1] Khởi chạy thành công! Nhấn nút [-] để ẩn/hiện.")
