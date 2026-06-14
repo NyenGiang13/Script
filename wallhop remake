@@ -1,4 +1,4 @@
--- Modern WallHop UI Premium 2026 - Combined Version
+-- Modern WallHop UI Premium 2026 - Combined & Fixed Version
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "WallHopGộp"
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
@@ -16,8 +16,8 @@ local frame = Instance.new("Frame")
 frame.Parent = screenGui
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 frame.BackgroundTransparency = 0.1
-frame.Size = UDim2.new(0, 220, 0, 200)
-frame.Position = UDim2.new(0.5, -110, 0.5, -100)
+frame.Size = UDim2.new(0, 220, 0, 240)
+frame.Position = UDim2.new(0.5, -110, 0.5, -120)
 frame.Active = true
 frame.Draggable = true
 addCorner(frame, UDim.new(0, 10))
@@ -65,7 +65,7 @@ status.TextColor3 = Color3.fromRGB(255, 80, 80)
 status.Font = Enum.Font.GothamSemibold
 status.BackgroundTransparency = 1
 
--- [NÚT CHẾ ĐỘ]
+-- [NÚT CHẾ ĐỘ XOAY]
 local mode = "Player"
 local modeBtn = Instance.new("TextButton")
 modeBtn.Parent = frame
@@ -82,11 +82,34 @@ modeBtn.MouseButton1Click:Connect(function()
     modeBtn.Text = "Mode: Rotate " .. mode
 end)
 
--- Nút Bật/Tắt
+-- [NÚT BẬT/TẮT INF JUMP]
+local infJump = false -- Mặc định tắt để trải nghiệm chân thực
+local infJumpBtn = Instance.new("TextButton")
+infJumpBtn.Parent = frame
+infJumpBtn.Size = UDim2.new(1, -30, 0, 30)
+infJumpBtn.Position = UDim2.new(0, 15, 0, 90)
+infJumpBtn.BackgroundColor3 = Color3.fromRGB(192, 57, 43)
+infJumpBtn.Text = "Inf Jump: OFF"
+infJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+infJumpBtn.Font = Enum.Font.GothamBold
+addCorner(infJumpBtn)
+
+infJumpBtn.MouseButton1Click:Connect(function()
+    infJump = not infJump
+    if infJump then
+        infJumpBtn.Text = "Inf Jump: ON"
+        infJumpBtn.BackgroundColor3 = Color3.fromRGB(39, 174, 96)
+    else
+        infJumpBtn.Text = "Inf Jump: OFF"
+        infJumpBtn.BackgroundColor3 = Color3.fromRGB(192, 57, 43)
+    end
+end)
+
+-- Nút Bật/Tắt Panel chung
 local onBtn = Instance.new("TextButton")
 onBtn.Parent = frame
 onBtn.Size = UDim2.new(0, 85, 0, 35)
-onBtn.Position = UDim2.new(0, 15, 0, 95)
+onBtn.Position = UDim2.new(0, 15, 0, 130)
 onBtn.BackgroundColor3 = Color3.fromRGB(46, 204, 113)
 onBtn.Text = "ENABLE"
 onBtn.Font = Enum.Font.GothamBold
@@ -95,7 +118,7 @@ addCorner(onBtn)
 local offBtn = Instance.new("TextButton")
 offBtn.Parent = frame
 offBtn.Size = UDim2.new(0, 85, 0, 35)
-offBtn.Position = UDim2.new(0, 120, 0, 95)
+offBtn.Position = UDim2.new(0, 120, 0, 130)
 offBtn.BackgroundColor3 = Color3.fromRGB(231, 76, 60)
 offBtn.Text = "DISABLE"
 offBtn.Font = Enum.Font.GothamBold
@@ -104,14 +127,14 @@ addCorner(offBtn)
 local destroyBtn = Instance.new("TextButton")
 destroyBtn.Parent = frame
 destroyBtn.Size = UDim2.new(1, -30, 0, 30)
-destroyBtn.Position = UDim2.new(0, 15, 0, 140)
+destroyBtn.Position = UDim2.new(0, 15, 0, 175)
 destroyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 destroyBtn.Text = "Remove Script"
 destroyBtn.TextColor3 = Color3.fromRGB(150, 150, 150)
 addCorner(destroyBtn)
 
 ---------------------------------------------------------
--- LOGIC WALLHOP TỐI ƯU
+-- LOGIC HỖ TRỢ XOAY CHUẨN KHI TẮT INF JUMP
 ---------------------------------------------------------
 local toggle = false
 local canJump = true
@@ -128,7 +151,7 @@ local function isNearWall()
     local rays = {look, -look, right, -right}
     for _, dir in pairs(rays) do
         local res = workspace:Raycast(hrp.Position, dir * 3, rayParams)
-        if res and res.Instance then return true end
+        if res and res.Instance and res.Instance.CanCollide == true then return true end
     end
     return false
 end
@@ -148,19 +171,18 @@ end)
 destroyBtn.MouseButton1Click:Connect(function() screenGui:Destroy() end)
 
 game:GetService("UserInputService").JumpRequest:Connect(function()
-    if toggle and canJump and isNearWall() then
+    if not toggle then return end
+    
+    local char = game.Players.LocalPlayer.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    local cam = workspace.CurrentCamera
+    
+    if hum and root and canJump and isNearWall() then
         canJump = false
-        local char = game.Players.LocalPlayer.Character
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        local root = char:FindFirstChild("HumanoidRootPart")
-        local cam = workspace.CurrentCamera
-
-        if hum and root then
-            -- Ép trạng thái nhảy
-            hum:ChangeState(Enum.HumanoidStateType.Jumping)
-            -- Thêm lực đẩy lên để hỗ trợ leo (Velocity)
-            root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, 48, root.AssemblyLinearVelocity.Z)
-
+        
+        -- HÀNH ĐỘNG XOAY HỖ TRỢ (Luôn chạy bất kể ON hay OFF)
+        task.spawn(function()
             if mode == "Player" then
                 root.CFrame = root.CFrame * CFrame.Angles(0, math.rad(-45), 0)
                 task.wait(0.03)
@@ -171,7 +193,14 @@ game:GetService("UserInputService").JumpRequest:Connect(function()
                 task.wait(0.03)
                 cam.CFrame = oldCam
             end
+        end)
+
+        -- CHỈ KÍCH HOẠT NHẢY VÔ HẠN KHI BẬT INF JUMP
+        if infJump then
+            hum:ChangeState(Enum.HumanoidStateType.Jumping)
+            root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, 48, root.AssemblyLinearVelocity.Z)
         end
+        
         task.wait(0.05)
         canJump = true
     end
