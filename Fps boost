@@ -1,0 +1,142 @@
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local userInputService = game:GetService("UserInputService")
+
+-- 1. Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ProfessionalBoostMenu"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- 2. Open Button (Hien thi khi Menu bi an)
+local openBtn = Instance.new("TextButton")
+openBtn.Name = "OpenBtn"
+openBtn.Size = UDim2.new(0, 60, 0, 30)
+openBtn.Position = UDim2.new(0, 10, 0.5, 0)
+openBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+openBtn.TextColor3 = Color3.new(1, 1, 1)
+openBtn.Text = "Open"
+openBtn.Visible = false
+openBtn.Parent = screenGui
+Instance.new("UICorner", openBtn).CornerRadius = UDim.new(0, 5)
+
+-- 3. Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 250, 0, 180)
+mainFrame.Position = UDim2.new(0.5, -125, 0.4, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 8)
+
+-- 4. Header Bar
+local header = Instance.new("Frame", mainFrame)
+header.Size = UDim2.new(1, 0, 0, 35)
+header.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+header.BorderSizePixel = 0
+Instance.new("UICorner", header).CornerRadius = UDim.new(0, 8)
+
+local titleHeader = Instance.new("TextLabel", header)
+titleHeader.Size = UDim2.new(0, 150, 1, 0)
+titleHeader.Position = UDim2.new(0, 10, 0, 0)
+titleHeader.Text = "FPS OPTIMIZER"
+titleHeader.TextColor3 = Color3.new(1, 1, 1)
+titleHeader.BackgroundTransparency = 1
+titleHeader.TextXAlignment = Enum.TextXAlignment.Left
+titleHeader.Font = Enum.Font.GothamBold
+
+-- Nut an (-) canh tieu de
+local hideBtn = Instance.new("TextButton", header)
+hideBtn.Size = UDim2.new(0, 30, 0, 25)
+hideBtn.Position = UDim2.new(1, -35, 0, 5)
+hideBtn.Text = "-"
+hideBtn.TextColor3 = Color3.new(1, 1, 1)
+hideBtn.BackgroundColor3 = Color3.fromRGB(180, 50, 50)
+Instance.new("UICorner", hideBtn).CornerRadius = UDim.new(0, 5)
+
+-- 5. Body Elements
+local infoText = Instance.new("TextLabel", mainFrame)
+infoText.Size = UDim2.new(1, 0, 0, 30)
+infoText.Position = UDim2.new(0, 0, 0, 45)
+infoText.Text = "FPS BOOST / LOW POLY"
+infoText.TextColor3 = Color3.fromRGB(200, 200, 200)
+infoText.BackgroundTransparency = 1
+
+local statusLabel = Instance.new("TextLabel", mainFrame)
+statusLabel.Size = UDim2.new(1, 0, 0, 30)
+statusLabel.Position = UDim2.new(0, 0, 0, 75)
+statusLabel.Text = "Status: OFF"
+statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Font = Enum.Font.GothamMedium
+
+local boostBtn = Instance.new("TextButton", mainFrame)
+boostBtn.Size = UDim2.new(0, 200, 0, 40)
+boostBtn.Position = UDim2.new(0.5, -100, 0, 115)
+boostBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+boostBtn.Text = "ACTIVATE"
+boostBtn.TextColor3 = Color3.new(1, 1, 1)
+boostBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", boostBtn).CornerRadius = UDim.new(0, 6)
+
+--- LOGIC XU LY ---
+
+local isEnabled = false
+local originalMaterials = {}
+
+-- Ham luu va thay doi do hoa
+local function toggleLowPoly(state)
+	if state then
+		-- Luu lai thiet lap cu va bat Low Poly
+		for _, v in pairs(workspace:GetDescendants()) do
+			if v:IsA("BasePart") then
+				originalMaterials[v] = {mat = v.Material, shadow = v.CastShadow}
+				v.Material = Enum.Material.SmoothPlastic
+				v.CastShadow = false
+			end
+		end
+		settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+	else
+		-- Tra lai thiet lap goc
+		for part, data in pairs(originalMaterials) do
+			if part and part.Parent then
+				part.Material = data.mat
+				part.CastShadow = data.shadow
+			end
+		end
+		originalMaterials = {}
+		settings().Rendering.QualityLevel = Enum.QualityLevel.Automatic
+	end
+end
+
+-- Nut Activate/Deactivate
+boostBtn.MouseButton1Click:Connect(function()
+	isEnabled = not isEnabled
+	if isEnabled then
+		statusLabel.Text = "Status: ON"
+		statusLabel.TextColor3 = Color3.fromRGB(80, 255, 80)
+		boostBtn.Text = "DEACTIVATE"
+		boostBtn.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+		toggleLowPoly(true)
+	else
+		statusLabel.Text = "Status: OFF"
+		statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+		boostBtn.Text = "ACTIVATE"
+		boostBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+		toggleLowPoly(false)
+	end
+end)
+
+-- Nut An Menu (-)
+hideBtn.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	openBtn.Visible = true
+end)
+
+-- Nut Hien Menu (Open)
+openBtn.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	openBtn.Visible = false
+end)
