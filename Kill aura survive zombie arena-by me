@@ -1,0 +1,124 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- Kiểm tra an toàn Folder và Remote
+local ZombiesFolder = workspace:FindFirstChild("Zombies_Local") or workspace:WaitForChild("Zombies_Local", 5)
+local GunRemote = ReplicatedStorage:FindFirstChild("GunRemotes") and ReplicatedStorage.GunRemotes:FindFirstChild("GunHit")
+
+local _G_Enabled = false
+local MAX_TARGETS = 8
+local FIRE_DELAY = 0.05
+local lastFire = 0
+
+-- --- TẠO GUI ---
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "KillAura_Giang"
+ScreenGui.Parent = game:GetService("CoreGui")
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 240, 0, 160)
+MainFrame.Position = UDim2.new(0.5, -120, 0.4, -80)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+
+-- Tiêu đề
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, 0, 0, 35)
+Title.Text = "Kill aura zombie - by Giang"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 14
+
+-- Nút Xóa GUI (Mới)
+local DeleteBtn = Instance.new("TextButton", MainFrame)
+DeleteBtn.Size = UDim2.new(0, 25, 0, 25)
+DeleteBtn.Position = UDim2.new(0, 5, 0, 5)
+DeleteBtn.Text = "X"
+DeleteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+DeleteBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+Instance.new("UICorner", DeleteBtn).CornerRadius = UDim.new(1, 0)
+
+-- Nút Ẩn (-)
+local HideBtn = Instance.new("TextButton", MainFrame)
+HideBtn.Size = UDim2.new(0, 25, 0, 25)
+HideBtn.Position = UDim2.new(1, -30, 0, 5)
+HideBtn.Text = "-"
+HideBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+HideBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Instance.new("UICorner", HideBtn)
+
+-- Nút Hiện (+)
+local ShowBtn = Instance.new("TextButton", ScreenGui)
+ShowBtn.Size = UDim2.new(0, 50, 0, 50)
+ShowBtn.Position = UDim2.new(0.05, 0, 0.1, 0)
+ShowBtn.Text = "+"
+ShowBtn.Visible = false
+ShowBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ShowBtn.TextColor3 = Color3.fromRGB(0, 170, 255)
+ShowBtn.Font = Enum.Font.GothamBold
+ShowBtn.TextSize = 25
+Instance.new("UICorner", ShowBtn).CornerRadius = UDim.new(1, 0)
+
+-- Trạng thái & Nút Bật
+local StatusText = Instance.new("TextLabel", MainFrame)
+StatusText.Size = UDim2.new(1, 0, 0, 30)
+StatusText.Position = UDim2.new(0, 0, 0, 45)
+StatusText.Text = "ĐANG TẮT"
+StatusText.TextColor3 = Color3.fromRGB(255, 80, 80)
+StatusText.BackgroundTransparency = 1
+StatusText.Font = Enum.Font.GothamSemibold
+
+local ActionBtn = Instance.new("TextButton", MainFrame)
+ActionBtn.Size = UDim2.new(0.85, 0, 0, 40)
+ActionBtn.Position = UDim2.new(0.075, 0, 0.65, 0)
+ActionBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+ActionBtn.Text = "BẬT"
+ActionBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+Instance.new("UICorner", ActionBtn)
+
+-- --- XỬ LÝ SỰ KIỆN ---
+DeleteBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy() -- Xóa toàn bộ GUI
+    _G_Enabled = false  -- Tắt logic
+end)
+
+HideBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; ShowBtn.Visible = true end)
+ShowBtn.MouseButton1Click:Connect(function() MainFrame.Visible = true; ShowBtn.Visible = false end)
+
+ActionBtn.MouseButton1Click:Connect(function()
+    _G_Enabled = not _G_Enabled
+    ActionBtn.Text = _G_Enabled and "TẮT" or "BẬT"
+    ActionBtn.BackgroundColor3 = _G_Enabled and Color3.fromRGB(150, 0, 0) or Color3.fromRGB(40, 40, 40)
+    StatusText.Text = _G_Enabled and "ĐANG BẬT" or "ĐANG TẮT"
+    StatusText.TextColor3 = _G_Enabled and Color3.fromRGB(80, 255, 80) or Color3.fromRGB(255, 80, 80)
+end)
+
+-- --- LOGIC KILL AURA ---
+RunService.Heartbeat:Connect(function()
+    if not _G_Enabled or not GunRemote or tick() - lastFire < FIRE_DELAY then return end
+    
+    local char = LocalPlayer.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    local tool = char and char:FindFirstChildOfClass("Tool")
+    if not hrp or not tool then return end
+    
+    lastFire = tick()
+    local count = 0
+    for _, z in ipairs(ZombiesFolder:GetChildren()) do
+        if z:IsA("Model") and z.PrimaryPart and (hrp.Position - z.PrimaryPart.Position).Magnitude < 500 then
+            local id = tonumber(z.Name:match("%d+"))
+            if id then
+                GunRemote:FireServer(tool.Name, id, z.PrimaryPart.Position)
+                count += 1
+                if count >= MAX_TARGETS then break end
+            end
+        end
+    end
+end)
