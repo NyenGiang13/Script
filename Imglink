@@ -1,7 +1,7 @@
 -- [[ 100 MÓN ẢNH THẬT TỐI ƯU CHO DELTA EXECUTOR ]]
 local ItemsData = {
     -- === ĐỒ ĂN (1 - 20) ===
-    {Name = "1. Bánh Mì Kẹp (Burger)", Link = "https://images.pngnice.com/download/2007/Burger-Free-PNG-Image.png"},
+    {Name = "1. Bánh Mì Kẹp (Burger)", Link = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJkfzyux1QVYgZ1JG6PcqayZwJPBM-l8qn__ReuLxDsw&s=10"},
     {Name = "2. Mỳ Ramen Nhật Bản", Link = "https://pngimg.com/uploads/ramen/ramen_PNG51.png"},
     {Name = "3. Kem Dâu Mát Lạnh", Link = "https://pngimg.com/uploads/ice_cream/ice_cream_PNG5095.png"},
     {Name = "4. Bánh Pizza Hải Sản", Link = "https://pngimg.com/uploads/pizza/pizza_PNG44090.png"},
