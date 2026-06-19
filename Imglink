@@ -5,7 +5,7 @@ local ItemsData = {
     {Name = "2. Mỳ Ramen Nhật Bản", Link = "https://static.vecteezy.com/system/resources/thumbnails/045/654/706/small/bowl-of-ramen-with-a-bowl-of-noodles-and-a-fried-egg-on-transparent-background-free-png.png"},
     {Name = "3. Kem Dâu Mát Lạnh", Link = "https://pngimg.com/uploads/ice_cream/ice_cream_PNG5095.png"},
     {Name = "4. Bánh Pizza Hải Sản", Link = "https://pngimg.com/uploads/pizza/pizza_PNG44090.png"},
-    {Name = "5. Đùi Gà Rán Giòn", Link = "https://pngimg.com/uploads/fried_chicken/fried_chicken_PNG14093.png"},
+    {Name = "5. Đùi Gà Rán Giòn", Link = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTh_maX5gQFS_O4HDmsGS-A07p4rOn_0-bNZb67Dn4ieovMAg5rQF1mwXo&s=10"},
     {Name = "6. Bánh Ngọt Cupcake", Link = "https://pngimg.com/uploads/cupcake/cupcake_PNG60.png"},
     {Name = "7. Khoai Tây Chiên", Link = "https://pngimg.com/uploads/potato_chips/potato_chips_PNG46.png"},
     {Name = "8. Bánh Sừng Bò (Croissant)", Link = "https://pngimg.com/uploads/croissant/croissant_PNG48.png"},
