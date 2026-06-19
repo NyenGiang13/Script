@@ -9,7 +9,7 @@ local ItemsData = {
     {Name = "6. Bánh Ngọt Cupcake", Link = "https://png.pngtree.com/png-vector/20240130/ourmid/pngtree-cupcake-png-with-ai-generated-png-image_11571382.png"},
     {Name = "7. Khoai Tây Chiên", Link = "https://png.pngtree.com/png-vector/20250606/ourmid/pngtree-french-fries-in-red-container-png-image_16476825.png"},
     {Name = "8. Bánh Sừng Bò (Croissant)", Link = "https://pngimg.com/uploads/croissant/croissant_PNG48.png"},
-    {Name = "9. Sushi Cá Hồi", Link = "https://pngimg.com/uploads/sushi/sushi_PNG9242.png"},
+    {Name = "9. Sushi Cá Hồi", Link = "https://img.magnific.com/free-vector/delicious-sushi-vector-illustration_1308-176195.jpg?semt=ais_hybrid&w=740&q=80"},
     {Name = "10. Thịt Bít Tết (Steak)", Link = "https://pngimg.com/uploads/steak/steak_PNG26.png"},
     {Name = "11. Cơm Rang Dương Châu", Link = "https://images.pngnice.com/download/2007/Fried-Rice-PNG-Transparent-Image.png"},
     {Name = "12. Trứng Ốp La", Link = "https://pngimg.com/uploads/egg/egg_PNG41.png"},
