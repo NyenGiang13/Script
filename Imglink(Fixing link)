@@ -40,8 +40,8 @@ local ItemsData = {
     {Name = "35. Nước Ép Dưa Hấu", Link = "https://static.vecteezy.com/system/resources/thumbnails/041/289/686/small/ai-generated-watermelon-juice-in-a-glass-isolated-on-transparent-background-png.png"},
 
     -- === PHONG CẢNH(dreamcore) (36 - 55) === *(Lưu ý: Phong cảnh luôn hiển thị dạng khung hình chữ nhật vì không có vật thể đơn lẻ để tách nền)*
-    {Name = "36. Hoàng Hôn Ở Biển", Link = "https://images.pngnice.com/download/2007/Jungle-PNG-Image-Transparent.png"},
-    {Name = "37. Núi Tuyết Hùng Vĩ", Link = "https://pngimg.com/uploads/mountain/mountain_PNG15.png"},
+    {Name = "36. Hoàng Hôn Ở Biển", Link = "https://raw.githubusercontent.com/NyenGiang13/Script/refs/heads/Custom-image/IMG_20260619_164844.jpg"},
+    {Name = "37. Núi Tuyết Hùng Vĩ", Link = "https://raw.githubusercontent.com/NyenGiang13/Script/refs/heads/Custom-image/IMG_20260619_164826.jpg"},
     {Name = "38. Biển Hoàng Hôn", Link = "https://images.pngnice.com/download/2007/Beach-Sunset-PNG-Transparent-Image.png"},
     {Name = "39. Thành Phố Lên Đèn", Link = "https://pngimg.com/uploads/cyberpunk/cyberpunk_PNG27.png"},
     {Name = "40. Vũ Trụ & Tinh Vân", Link = "https://pngimg.com/uploads/nebula/nebula_PNG35.png"},
