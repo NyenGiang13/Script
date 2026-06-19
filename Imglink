@@ -1,0 +1,292 @@
+-- [[ 100 MÓN ẢNH THẬT TỐI ƯU CHO DELTA EXECUTOR ]]
+local ItemsData = {
+    -- === ĐỒ ĂN (1 - 20) ===
+    {Name = "1. Bánh Mì Kẹp (Burger)", Link = "https://images.pngnice.com/download/2007/Burger-Free-PNG-Image.png"},
+    {Name = "2. Mỳ Ramen Nhật Bản", Link = "https://pngimg.com/uploads/ramen/ramen_PNG51.png"},
+    {Name = "3. Kem Dâu Mát Lạnh", Link = "https://pngimg.com/uploads/ice_cream/ice_cream_PNG5095.png"},
+    {Name = "4. Bánh Pizza Hải Sản", Link = "https://pngimg.com/uploads/pizza/pizza_PNG44090.png"},
+    {Name = "5. Đùi Gà Rán Giòn", Link = "https://pngimg.com/uploads/fried_chicken/fried_chicken_PNG14093.png"},
+    {Name = "6. Bánh Ngọt Cupcake", Link = "https://pngimg.com/uploads/cupcake/cupcake_PNG60.png"},
+    {Name = "7. Khoai Tây Chiên", Link = "https://pngimg.com/uploads/potato_chips/potato_chips_PNG46.png"},
+    {Name = "8. Bánh Sừng Bò (Croissant)", Link = "https://pngimg.com/uploads/croissant/croissant_PNG48.png"},
+    {Name = "9. Sushi Cá Hồi", Link = "https://pngimg.com/uploads/sushi/sushi_PNG9242.png"},
+    {Name = "10. Thịt Bít Tết (Steak)", Link = "https://pngimg.com/uploads/steak/steak_PNG26.png"},
+    {Name = "11. Cơm Rang Dương Châu", Link = "https://images.pngnice.com/download/2007/Fried-Rice-PNG-Transparent-Image.png"},
+    {Name = "12. Trứng Ốp La", Link = "https://pngimg.com/uploads/egg/egg_PNG41.png"},
+    {Name = "13. Bánh Donut Vòng", Link = "https://pngimg.com/uploads/donut/donut_PNG40.png"},
+    {Name = "14. Chocolate Thanh", Link = "https://pngimg.com/uploads/chocolate/chocolate_PNG13.png"},
+    {Name = "15. Quả Táo Đỏ", Link = "https://pngimg.com/uploads/apple/apple_PNG12405.png"},
+    {Name = "16. Quả Chuối Vàng", Link = "https://pngimg.com/uploads/banana/banana_PNG817.png"},
+    {Name = "17. Quả Dâu Tây", Link = "https://pngimg.com/uploads/strawberry/strawberry_PNG2599.png"},
+    {Name = "18. Quả Dưa Hấu", Link = "https://pngimg.com/uploads/watermelon/watermelon_PNG2641.png"},
+    {Name = "19. Bánh Kẹo Mút (Lollipop)", Link = "https://pngimg.com/uploads/lollipop/lollipop_PNG32.png"},
+    {Name = "20. Bánh Kem Sinh Nhật", Link = "https://pngimg.com/uploads/cake/cake_PNG13093.png"},
+
+    -- === THỨC UỐNG (21 - 35) ===
+    {Name = "21. Ly Cà Phê Sữa", Link = "https://pngimg.com/uploads/coffee_cup/coffee_cup_PNG1963.png"},
+    {Name = "22. Trà Sữa Trân Châu", Link = "https://images.pngnice.com/download/2007/Bubble-Tea-PNG-Clipart.png"},
+    {Name = "23. Lon Nước Ngọt Pepsi", Link = "https://pngimg.com/uploads/pepsi/pepsi_PNG8.png"},
+    {Name = "24. Ly Nước Cam Ép", Link = "https://pngimg.com/uploads/orange_juice/orange_juice_PNG40.png"},
+    {Name = "25. Ly Sinh Tố Bơ", Link = "https://images.pngnice.com/download/2007/Avocado-Smoothie-PNG-File.png"},
+    {Name = "26. Chai Nước Khoáng", Link = "https://pngimg.com/uploads/water_bottle/water_bottle_PNG99222.png"},
+    {Name = "27. Ly Rượu Vang Đỏ", Link = "https://pngimg.com/uploads/wine_glass/wine_glass_PNG10773.png"},
+    {Name = "28. Ly Cocktail Nhiệt Đới", Link = "https://pngimg.com/uploads/cocktail/cocktail_PNG72.png"},
+    {Name = "29. Tách Trà Xanh", Link = "https://pngimg.com/uploads/tea/tea_PNG16892.png"},
+    {Name = "30. Hộp Sữa Tươi", Link = "https://pngimg.com/uploads/milk/milk_PNG12733.png"},
+    {Name = "31. Ly Nước Chanh Đá", Link = "https://pngimg.com/uploads/lemon/lemon_PNG41243.png"},
+    {Name = "32. Nước Dừa Nguyên Quả", Link = "https://pngimg.com/uploads/coconut/coconut_PNG11497.png"},
+    {Name = "33. Sinh Tố Dâu Tây", Link = "https://images.pngnice.com/download/2007/Strawberry-Smoothie-PNG-Transparent.png"},
+    {Name = "34. Ly Bia Sủi Bọt", Link = "https://pngimg.com/uploads/beer_mug/beer_mug_PNG45.png"},
+    {Name = "35. Nước Ép Dưa Hấu", Link = "https://images.pngnice.com/download/2007/Watermelon-Juice-PNG-Free-Download.png"},
+
+    -- === PHONG CẢNH (36 - 55) === *(Lưu ý: Phong cảnh luôn hiển thị dạng khung hình chữ nhật vì không có vật thể đơn lẻ để tách nền)*
+    {Name = "36. Rừng Nguyên Sinh", Link = "https://images.pngnice.com/download/2007/Jungle-PNG-Image-Transparent.png"},
+    {Name = "37. Núi Tuyết Hùng Vĩ", Link = "https://pngimg.com/uploads/mountain/mountain_PNG15.png"},
+    {Name = "38. Biển Hoàng Hôn", Link = "https://images.pngnice.com/download/2007/Beach-Sunset-PNG-Transparent-Image.png"},
+    {Name = "39. Thành Phố Lên Đèn", Link = "https://pngimg.com/uploads/cyberpunk/cyberpunk_PNG27.png"},
+    {Name = "40. Vũ Trụ & Tinh Vân", Link = "https://pngimg.com/uploads/nebula/nebula_PNG35.png"},
+    {Name = "41. Sa Mạc Cát Vàng", Link = "https://images.pngnice.com/download/2007/Desert-PNG-Transparent-HD-Photo.png"},
+    {Name = "42. Thác Nước Trong Rừng", Link = "https://pngimg.com/uploads/waterfall/waterfall_PNG18.png"},
+    {Name = "43. Cánh Đồng Hoa Hướng Dương", Link = "https://pngimg.com/uploads/sunflower/sunflower_PNG13364.png"},
+    {Name = "44. Hang Động Huyền Bí", Link = "https://images.pngnice.com/download/2007/Cave-PNG-Transparent-HD-Photo.png"},
+    {Name = "45. Hòn Đảo Biệt Lập", Link = "https://pngimg.com/uploads/island/island_PNG39.png"},
+    {Name = "46. Thung Lũng Xanh", Link = "https://images.pngnice.com/download/2007/Valley-PNG-Transparent-Image.png"},
+    {Name = "47. Dòng Sông Băng", Link = "https://pngimg.com/uploads/iceberg/iceberg_PNG5.png"},
+    {Name = "48. Bầu Trời Đầy Sao", Link = "https://pngimg.com/uploads/stars/stars_PNG7525.png"},
+    {Name = "49. Ngọn Hải Đăng Đêm", Link = "https://pngimg.com/uploads/lighthouse/lighthouse_PNG21.png"},
+    {Name = "50. Làng Quê Yên Bình", Link = "https://images.pngnice.com/download/2007/Village-PNG-Transparent-HD-Photo.png"},
+    {Name = "51. Núi Lửa Phun Trào", Link = "https://pngimg.com/uploads/volcano/volcano_PNG32.png"},
+    {Name = "52. Rừng Cây Mùa Thu", Link = "https://pngimg.com/uploads/autumn_trees/autumn_trees_PNG35.png"},
+    {Name = "53. Đường Phố Mưa Đêm", Link = "https://images.pngnice.com/download/2007/Rain-PNG-Clipart-Transparent.png"},
+    {Name = "54. Công Viên Hoa Anh Đào", Link = "https://pngimg.com/uploads/sakura/sakura_PNG46.png"},
+    {Name = "55. Lâu Đài Cổ Kính", Link = "https://pngimg.com/uploads/castle/castle_PNG30.png"},
+
+    -- === ĐỒ VẬT & VŨ KHÍ (56 - 75) ===
+    {Name = "56. Kiếm Ánh Sáng", Link = "https://pngimg.com/uploads/lightsaber/lightsaber_PNG32.png"},
+    {Name = "57. Khiên Thép Kiên Cố", Link = "https://pngimg.com/uploads/shield/shield_PNG1254.png"},
+    {Name = "58. Hộp Kho Báu Cổ", Link = "https://pngimg.com/uploads/chest/chest_PNG13.png"},
+    {Name = "59. Sách Phép Thuật", Link = "https://pngimg.com/uploads/book/book_PNG2111.png"},
+    {Name = "60. Đá Quý Kim Cương", Link = "https://pngimg.com/uploads/diamond/diamond_PNG6693.png"},
+    {Name = "61. Balo Thám Hiểm", Link = "https://pngimg.com/uploads/backpack/backpack_PNG9410.png"},
+    {Name = "62. Kính Thiên Văn", Link = "https://pngimg.com/uploads/telescope/telescope_PNG47.png"},
+    {Name = "63. Cung Tên Băng Giá", Link = "https://pngimg.com/uploads/bow_and_arrow/bow_and_arrow_PNG19.png"},
+    {Name = "64. Rìu Chiến Khổng Lồ", Link = "https://pngimg.com/uploads/axe/axe_PNG30.png"},
+    {Name = "65. Trượng Ma Thuật", Link = "https://images.pngnice.com/download/2007/Magic-Staff-PNG-Image-Transparent.png"},
+    {Name = "66. Đồng Hồ Quả Quýt", Link = "https://pngimg.com/uploads/pocket_watch/pocket_watch_PNG49.png"},
+    {Name = "67. Chìa Khóa Vàng", Link = "https://pngimg.com/uploads/key/key_PNG1180.png"},
+    {Name = "68. Đèn Bão Cổ Điển", Link = "https://pngimg.com/uploads/lantern/lantern_PNG42.png"},
+    {Name = "69. Bản Đồ Kho Báu", Link = "https://pngimg.com/uploads/treasure_map/treasure_map_PNG32.png"},
+    {Name = "70. La Bàn Đồng", Link = "https://pngimg.com/uploads/compass/compass_PNG63.png"},
+    {Name = "71. Nhẫn Ngọc Bích", Link = "https://pngimg.com/uploads/ring/ring_PNG24.png"},
+    {Name = "72. Vương Miện Vua", Link = "https://pngimg.com/uploads/crown/crown_PNG28.png"},
+    {Name = "73. Bình Thuốc Hồi Máu", Link = "https://images.pngnice.com/download/2007/Potion-PNG-File.png"},
+    {Name = "74. Bình Thuốc Mana Blue", Link = "https://images.pngnice.com/download/2007/Magic-Potion-PNG-Clipart.png"},
+    {Name = "75. Quả Cầu Pha Lê", Link = "https://pngimg.com/uploads/crystal_ball/crystal_ball_PNG27.png"},
+
+    -- === ĐỘNG VẬT & PHƯƠNG TIỆN (76 - 100) ===
+    {Name = "76. Mèo Con Đáng Yêu", Link = "https://pngimg.com/uploads/cat/cat_PNG50435.png"},
+    {Name = "77. Chú Chó Shiba", Link = "https://pngimg.com/uploads/dog/dog_PNG50348.png"},
+    {Name = "78. Rồng Lửa Thần Thoại", Link = "https://pngimg.com/uploads/dragon/dragon_PNG84.png"},
+    {Name = "79. Siêu Xe Thể Thao", Link = "https://pngimg.com/uploads/sport_car/sport_car_PNG5552.png"},
+    {Name = "80. Phi Thuyền Không Gian", Link = "https://pngimg.com/uploads/spaceship/spaceship_PNG24.png"},
+    {Name = "81. Gấu Trúc Nhỏ", Link = "https://pngimg.com/uploads/panda/panda_PNG21.png"},
+    {Name = "82. Chú Thỏ Trắng", Link = "https://pngimg.com/uploads/rabbit/rabbit_PNG3765.png"},
+    {Name = "83. Chim Phượng Hoàng", Link = "https://pngimg.com/uploads/phoenix/phoenix_PNG34.png"},
+    {Name = "84. Cá Heo Xanh", Link = "https://pngimg.com/uploads/dolphin/dolphin_PNG18.png"},
+    {Name = "85. Sói Tuyết Hoang Dã", Link = "https://pngimg.com/uploads/wolf/wolf_PNG23192.png"},
+    {Name = "86. Hổ Vằn Băng Giá", Link = "https://pngimg.com/uploads/tiger/tiger_PNG23223.png"},
+    {Name = "87. Ngựa Thần Có Cánh", Link = "https://pngimg.com/uploads/pegasus/pegasus_PNG54.png"},
+    {Name = "88. Khủng Long T-Rex", Link = "https://pngimg.com/uploads/dinosaur/dinosaur_PNG14.png"},
+    {Name = "89. Chim Cú Mèo", Link = "https://pngimg.com/uploads/owl/owl_PNG18.png"},
+    {Name = "90. Đại Bàng Tung Cánh", Link = "https://pngimg.com/uploads/eagle/eagle_PNG1233.png"},
+    {Name = "91. Xe Máy Phân Khối Lớn", Link = "https://pngimg.com/uploads/motorcycle/motorcycle_PNG3152.png"},
+    {Name = "92. Máy Bay Trực Thăng", Link = "https://pngimg.com/uploads/helicopter/helicopter_PNG25.png"},
+    {Name = "93. Du Thuyền Hạng Sang", Link = "https://pngimg.com/uploads/yacht/yacht_PNG51.png"},
+    {Name = "94. Xe Tăng Hạng Nặng", Link = "https://pngimg.com/uploads/tank/tank_PNG25.png"},
+    {Name = "95. Tàu Ngầm Đại Dương", Link = "https://pngimg.com/uploads/submarine/submarine_PNG41.png"},
+    {Name = "96. Khinh Khí Cầu Sặc Sỡ", Link = "https://pngimg.com/uploads/balloon/balloon_PNG5658.png"},
+    {Name = "97. Xe Đạp Địa Hình", Link = "https://pngimg.com/uploads/bicycle/bicycle_PNG533.png"},
+    {Name = "98. Tàu Hỏa Tốc Hành", Link = "https://pngimg.com/uploads/train/train_PNG101413.png"},
+    {Name = "99. Ván Lướt Sóng Siêu Tốc", Link = "https://pngimg.com/uploads/surfboard/surfboard_PNG30.png"},
+    {Name = "100. Đĩa Bay UFO Alien", Link = "https://pngimg.com/uploads/ufo/ufo_PNG47.png"}
+}
+
+-- [[ KHỞI TẠO CÁC DỊCH VỤ HỆ THỐNG ]]
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+
+-- [[ TẠO GIAO DIỆN CHÍNH ]]
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "DeltaCustomGui100"
+ScreenGui.ResetOnSpawn = false
+
+-- Bảo vệ GUI tương thích với Delta Executor
+local targetParent = gethui and gethui() or LocalPlayer:WaitForChild("PlayerGui")
+if syn and syn.protect_gui then syn.protect_gui(ScreenGui) end
+ScreenGui.Parent = targetParent
+
+-- Khung chính (Main Frame) - Kích thước tối ưu cho cả PC lẫn Mobile
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 300, 0, 420)
+MainFrame.Position = UDim2.new(0.35, 0, 0.25, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true 
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
+
+-- Thanh Tiêu đề (Vùng chạm kéo thả)
+local TitleBar = Instance.new("Frame")
+TitleBar.Name = "TitleBar"
+TitleBar.Size = UDim2.new(1, 0, 0, 48)
+TitleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = MainFrame
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 12)
+TitleCorner.Parent = TitleBar
+
+-- Chữ Tiêu đề (Hiển thị Chủ đề - Theme)
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Name = "TitleLabel"
+TitleLabel.Size = UDim2.new(1, -24, 1, 0)
+TitleLabel.Position = UDim2.new(0, 14, 0, 0)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Font = Enum.Font.GothamBold
+TitleLabel.TextSize = 13
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.Text = "Chủ đề: Đang đồng bộ..."
+TitleLabel.Parent = TitleBar
+
+-- Khung cuộn chứa 100 nút (Scrolling Frame)
+local ScrollFrame = Instance.new("ScrollingFrame")
+ScrollFrame.Name = "ScrollFrame"
+ScrollFrame.Size = UDim2.new(1, -16, 1, -68)
+ScrollFrame.Position = UDim2.new(0, 8, 0, 58)
+ScrollFrame.BackgroundTransparency = 1
+ScrollFrame.BorderSizePixel = 0
+ScrollFrame.ScrollBarThickness = 5
+ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(140, 140, 140)
+ScrollFrame.Parent = MainFrame
+
+-- Sắp xếp hàng dọc tự động
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 6)
+UIListLayout.Parent = ScrollFrame
+
+-- Tự cập nhật độ dài cuộn khi lướt trên Delta Mobile
+UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 15)
+end)
+
+-- [[ ĐỒNG BỘ CHỦ ĐỀ TỪ GAME ]]
+task.spawn(function()
+    pcall(function()
+        local ThemePath = LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Game"):WaitForChild("Top"):WaitForChild("Theme")
+        
+        local function UpdateTheme()
+            TitleLabel.Text = "Chủ đề: " .. tostring(ThemePath.Text)
+        end
+        
+        UpdateTheme()
+        ThemePath:GetPropertyChangedSignal("Text"):Connect(UpdateTheme)
+    end)
+end)
+
+-- [[ TẠO 100 NÚT VÀ CÀI ĐẶT HÀM CLIPBOARD TRÊN DELTA ]]
+for i, item in ipairs(ItemsData) do
+    local Button = Instance.new("TextButton")
+    Button.Name = "DeltaBtn_" .. i
+    Button.Size = UDim2.new(1, -6, 0, 38) -- Nới rộng 38px để chạm trên điện thoại dễ hơn
+    Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Button.Font = Enum.Font.Gotham
+    Button.TextSize = 12
+    Button.TextColor3 = Color3.fromRGB(225, 225, 225)
+    Button.Text = "  " .. item.Name
+    Button.TextXAlignment = Enum.TextXAlignment.Left
+    Button.BorderSizePixel = 0
+    Button.Parent = ScrollFrame
+    
+    local ButtonCorner = Instance.new("UICorner")
+    ButtonCorner.CornerRadius = UDim.new(0, 6)
+    ButtonCorner.Parent = Button
+    
+    -- Hiệu ứng Hover chạm/chuột
+    Button.MouseEnter:Connect(function()
+        Button.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+    end)
+    Button.MouseLeave:Connect(function()
+        Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    end)
+    
+    -- Xử lý sao chép Link
+    Button.MouseButton1Click:Connect(function()
+        local linkStr = tostring(item.Link)
+        
+        -- Gọi hàm sao chép bộ nhớ tạm tương thích tốt nhất trên Delta
+        if setclipboard then
+            setclipboard(linkStr)
+            
+            -- Đổi màu hiệu ứng xanh lá thông báo thành công nhanh
+            local currentText = Button.Text
+            Button.Text = "  ✔ Đã copy link món " .. i
+            Button.TextColor3 = Color3.fromRGB(120, 255, 120)
+            Button.BackgroundColor3 = Color3.fromRGB(30, 75, 30)
+            
+            task.wait(0.5)
+            Button.Text = currentText
+            Button.TextColor3 = Color3.fromRGB(225, 225, 225)
+            Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        else
+            -- Trường hợp khẩn cấp/Dự phòng lỗi
+            print("Link món " .. i .. ": " .. linkStr)
+            Button.Text = "  ❌ Delta lỗi hàm setclipboard"
+            Button.TextColor3 = Color3.fromRGB(255, 100, 100)
+            task.wait(1)
+            Button.Text = "  " .. item.Name
+            Button.TextColor3 = Color3.fromRGB(225, 225, 225)
+        end
+    end)
+end
+
+-- [[ LOGIC KÉO THẢ MƯỢT MÀ CHO CẢ CHUỘT VÀ CẢM ỨNG ]]
+local dragging, dragInput, dragStart, startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+TitleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+TitleBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
+end)
