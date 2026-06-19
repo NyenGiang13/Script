@@ -55,14 +55,16 @@ local ItemsData = {
     {Name = "48. Ảnh Mây Và Nắng", Link = "https://raw.githubusercontent.com/NyenGiang13/Test1/refs/heads/main/IMG_20260619_171459.jpg"},
     {Name = "49. Ảnh Xe Đẩy", Link = "https://raw.githubusercontent.com/NyenGiang13/Test1/refs/heads/main/IMG_20260619_170353.jpg"},
     {Name = "50. Drop limit ?????", Link = "https://raw.githubusercontent.com/NyenGiang13/Test1/refs/heads/main/IMG_20260619_170217.jpg"},
-    {Name = "51. Núi Lửa Phun Trào", Link = "https://pngimg.com/uploads/volcano/volcano_PNG32.png"},
-    {Name = "52. Rừng Cây Mùa Thu", Link = "https://pngimg.com/uploads/autumn_trees/autumn_trees_PNG35.png"},
-    {Name = "53. Đường Phố Mưa Đêm", Link = "https://images.pngnice.com/download/2007/Rain-PNG-Clipart-Transparent.png"},
-    {Name = "54. Công Viên Hoa Anh Đào", Link = "https://pngimg.com/uploads/sakura/sakura_PNG46.png"},
-    {Name = "55. Lâu Đài Cổ Kính", Link = "https://pngimg.com/uploads/castle/castle_PNG30.png"},
+    
+    -- === ĐỒ VẬT TRONG ROBLOX (51 -56) ===
+    {Name = "51. Kiếm Roblox", Link = "https://tr.rbxcdn.com/180DAY-49946aa22029635d674f84669d42a09f/420/420/WaistAccessory/Png/noFilter"},
+    {Name = "52. Pizza Roblox", Link = "https://tr.rbxcdn.com/180DAY-de439930269d971779c2db9c9297c282/420/420/Gear/Png/noFilter"},
+    {Name = "53. Cheeseburger Roblox", Link = "https://media.sketchfab.com/models/241d1ac9a77b444a92f0a457f1ddca85/thumbnails/25bf2c77335f4e018905b707a75b7a71/dcc67f7dfe9248b58f8102d974a004c4.jpeg"},
+    {Name = "54. Jump Coil Roblox", Link = "https://static.wikia.nocookie.net/plated/images/3/3e/Gravity_coil.png/revision/latest?cb=20240604132413"},
+    {Name = "55. Boombox Roblox", Link = "https://tr.rbxcdn.com/180DAY-7f4f14482df7ecf2050d56fd77615a8c/420/420/Gear/Png/noFilter"},
+    {Name = "56. Roblox Icon", Link = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLm8TlXPDsktnK4zJQDNfY3pWoaLmpDSJgeK3s-gwsXA&s=10"},
 
-    -- === ĐỒ VẬT & VŨ KHÍ (56 - 75) ===
-    {Name = "56. Kiếm Ánh Sáng", Link = "https://pngimg.com/uploads/lightsaber/lightsaber_PNG32.png"},
+    -- === ĐỒ VẬT & VŨ KHÍ (57 - 75) ===
     {Name = "57. Khiên Thép Kiên Cố", Link = "https://pngimg.com/uploads/shield/shield_PNG1254.png"},
     {Name = "58. Hộp Kho Báu Cổ", Link = "https://pngimg.com/uploads/chest/chest_PNG13.png"},
     {Name = "59. Sách Phép Thuật", Link = "https://pngimg.com/uploads/book/book_PNG2111.png"},
